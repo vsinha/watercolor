@@ -1,2 +1,0 @@
-(()=>{})();
-//# sourceMappingURL=draw.js.map
