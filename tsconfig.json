@@ -15,7 +15,7 @@
     /* Additional Checks */
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
 
     /* Module Resolution Options */
     "types": ["p5/global"],
