@@ -16,6 +16,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": true,
 
     /* Module Resolution Options */
     "types": ["p5/global"],
