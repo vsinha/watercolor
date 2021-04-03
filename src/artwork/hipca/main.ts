@@ -1,8 +1,10 @@
+import * as Name from "../../lib/name.js";
 import { Shape } from "./shape.js";
 
 const shapes: Shape[] = [];
 
 export const setup = (): void => {
+  console.log(Name.generate());
   createCanvas(windowWidth, windowHeight);
 
   const center = createVector(windowWidth / 2, windowHeight / 2);
@@ -25,13 +27,13 @@ export const setup = (): void => {
     shapes.push(layer);
   }
 
-  background("rgba(255, 255, 255, 1)");
+  background("black");
   noStroke();
 
   shapes.forEach((s: Shape) => {
     fill(`rgba(146, 23, 178, ${s.alpha})`);
     beginShape();
-    s.points.forEach((point) => vertex(point.x, point.y));
+    s.points.forEach((point) => curveVertex(point.x, point.y));
     endShape(CLOSE);
   });
 };
@@ -39,3 +41,5 @@ export const setup = (): void => {
 export const draw = (): void => {
   // update();
 };
+
+Object.assign(window, { setup, draw });

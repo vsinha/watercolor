@@ -12,6 +12,7 @@ export const setup = (): void => {
   lines = Array.from({ length: num_points }, () => [
     new_random_point(windowWidth, windowHeight),
   ]);
+  background("black");
 };
 
 function update() {
@@ -34,9 +35,9 @@ function update() {
 
 export const draw = (): void => {
   update();
-  background("rgba(255, 255, 255, 0.01)");
+  background("rgba(10, 10, 10, 0.01)");
   noFill();
-  stroke("purple");
+  stroke("lightblue");
   strokeWeight(1);
 
   lines.forEach((line) => {
@@ -45,3 +46,5 @@ export const draw = (): void => {
     endShape();
   });
 };
+
+Object.assign(window, { setup, draw });
