@@ -34,6 +34,6 @@ esbuild.build({
   outdir: "./dist/",
   watch: true,
   sourcemap: true,
-  minify: true,
+  minify: false,
   logLevel: "info",
 });

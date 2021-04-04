@@ -2,13 +2,13 @@ import p5, { Vector } from "p5";
 import * as Moremath from "../../lib/moremath.js";
 
 const num_points = 40000;
-let lines: p5.Vector[][] = [];
+let points: p5.Vector[][] = [];
 
 const new_random_point = (width: number, height: number) =>
   createVector(random(0, width), random(0, height));
 
-export const setup_sized = (width: number, height: number) => {
-  lines = Array.from({ length: num_points }, () => [
+export const setup_sized = (width: number, height: number): void => {
+  points = Array.from({ length: num_points }, () => [
     new_random_point(width, height),
   ]);
 
@@ -28,7 +28,7 @@ const multiple = Math.PI / denominator;
 function update() {
   const s = 0.01;
   const offset = 70;
-  lines = lines.map(() => {
+  points = points.map(() => {
     const new_line = [new_random_point(windowWidth, windowHeight)];
     for (let i = 0; i < 20; i++) {
       const p = new_line[i] || createVector(0, 0);
@@ -38,10 +38,7 @@ function update() {
         offset * (noise(p.x * s, p.y * s, 1.0) - 0.5)
       );
       const unit = createVector(0, 1);
-      const a = Moremath.round_to_nearest_multiple(
-        n.angleBetween(unit),
-        multiple
-      );
+      const a = Moremath.roundToMultiple(n.angleBetween(unit), multiple);
       unit.rotate(a).mult(n.mag());
       const next_point = Vector.add(p, unit);
       // const n = p5.Vector.sub(p, next_point);
@@ -58,7 +55,7 @@ function d() {
   stroke("lightblue");
   strokeWeight(0.05);
 
-  lines.forEach((line) => {
+  points.forEach((line) => {
     beginShape();
     line.forEach((p) => vertex(p.x, p.y));
     endShape();

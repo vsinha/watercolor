@@ -1,4 +1,5 @@
 import { Vector } from "p5";
+import { randGaussian } from "../../lib/moremath.js";
 
 function polygon(center: Vector, radius: number, num_points: number) {
   const angle = TWO_PI / num_points;
@@ -7,21 +8,13 @@ function polygon(center: Vector, radius: number, num_points: number) {
   );
 }
 
-function gaussianRand() {
-  let rand = 0;
-  for (let i = 0; i < 3; i += 1) {
-    rand += Math.random();
-  }
-  return rand / 3;
-}
-
 function midpoint(a: Vector, b: Vector) {
   const dist = a.dist(b);
   // For js reasons, p5js's random is slower than the builtin one
   const push_distance = Math.random() * dist;
   const unit = Vector.sub(a, b)
     .normalize()
-    .rotate(gaussianRand() * PI)
+    .rotate(randGaussian() * PI)
     .mult(push_distance);
   return createVector((a.x + b.x) / 2, (a.y + b.y) / 2).add(unit);
 }

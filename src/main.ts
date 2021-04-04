@@ -1,6 +1,4 @@
-import p5 from "p5";
-
-import * as seluj from "./artwork/seluj/main.js";
+import * as qopyl from "./artwork/qopyl/main.js";
 // function sketch_idnameofdiv(p) {
 //   p.setup = function () {
 //     p.createCanvas(400, 400);
@@ -18,11 +16,11 @@ export const setup = (): void => {
   const height = 500;
   const renderer = createCanvas(width, height);
   renderer.parent("art_div");
-  seluj.setup_sized(width, height);
+  qopyl.setup_sized(width, height);
 };
 
 export const draw = (): void => {
-  seluj.draw();
+  qopyl.draw();
 };
 
 // Expose the setup/draw functions to the global scope, because
