@@ -13,6 +13,8 @@ canvas {
 }
 
 .container {
+  position: absolute;
+  display: block;
   margin: 20px;
 }
 

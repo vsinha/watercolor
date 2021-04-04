@@ -17046,8 +17046,65 @@
     });
   });
 
-  // src/artwork/qopyl/main.ts
+  // src/artwork/qopyl/boid.ts
   var import_p5 = __toModule(require_p5_min());
+  var speed = 1;
+  function vectorMean(vecs) {
+    if (vecs.length == 0) {
+      return createVector(0, 0);
+    }
+    const sx = vecs.map((v) => v.x).reduce((a, b) => a + b);
+    const sy = vecs.map((v) => v.y).reduce((a, b) => a + b);
+    return createVector(sx / vecs.length, sy / vecs.length);
+  }
+  function limitVec(v) {
+    if (v.magSq() > 1) {
+      v.setMag(1);
+    }
+    return v;
+  }
+  var Boid = class {
+    constructor(x, y) {
+      this.pos = createVector(x, y);
+      this.radius = 100;
+      this.avoidRadius = 20;
+      this.alignRadius = 50;
+      this.speed = 1;
+      this.velocity = createVector(random(-1, 1), random(-1, 1)).normalize().mult(speed);
+    }
+    draw() {
+      stroke("lightblue");
+      strokeWeight(4);
+      point(this.pos.x, this.pos.y);
+      strokeWeight(2);
+      const dir = import_p5.Vector.mult(this.velocity, 10);
+      line(this.pos.x, this.pos.y, this.pos.x + dir.x, this.pos.y + dir.y);
+    }
+    getNeighbors(radius, boids2) {
+      return boids2.filter((boid) => boid != this && this.pos.dist(boid.pos) < radius);
+    }
+    vecTowardsCenter(vecs) {
+      if (vecs.length == 0) {
+        return createVector(0, 0);
+      } else {
+        return limitVec(vectorMean(vecs).sub(this.pos));
+      }
+    }
+    update(boids2) {
+      const center = this.vecTowardsCenter(this.getNeighbors(this.radius, boids2).map((n) => n.pos));
+      const avoid = this.vecTowardsCenter(this.getNeighbors(this.avoidRadius, boids2).map((n) => n.pos)).mult(-1);
+      const align = this.vecTowardsCenter(this.getNeighbors(this.alignRadius, boids2).map((n) => n.velocity));
+      const love = mouseIsPressed ? limitVec(createVector(mouseX, mouseY).sub(this.pos)) : createVector(0, 0);
+      const w_center = 3;
+      const w_avoid = 10;
+      const w_align = 1;
+      const w_love = 100;
+      const goal = center.mult(w_center).add(avoid.mult(w_avoid)).add(align.mult(w_align)).add(love.mult(w_love)).normalize();
+      const mu = 0.1;
+      this.velocity.mult(1 - mu).add(goal.mult(mu)).normalize();
+      this.pos.add(this.velocity);
+    }
+  };
 
   // src/artwork/qopyl/quadtree.ts
   var Quad = class {
@@ -17128,77 +17185,22 @@
   };
 
   // src/artwork/qopyl/main.ts
-  var num_points = 200;
-  var speed = 1;
   var boids = [];
-  function vectorMean(vecs) {
-    if (vecs.length == 0) {
-      return createVector(0, 0);
-    }
-    const sx = vecs.map((v) => v.x).reduce((a, b) => a + b);
-    const sy = vecs.map((v) => v.y).reduce((a, b) => a + b);
-    return createVector(sx / vecs.length, sy / vecs.length);
-  }
-  function limitVec(v) {
-    if (v.magSq() > 1) {
-      v.setMag(1);
-    }
-    return v;
-  }
-  var Boid = class {
-    constructor(x, y) {
-      this.pos = createVector(x, y);
-      this.radius = 100;
-      this.avoidRadius = 20;
-      this.alignRadius = 50;
-      this.speed = 1;
-      this.velocity = createVector(random(-1, 1), random(-1, 1)).normalize().mult(speed);
-    }
-    draw() {
-      stroke("lightblue");
-      strokeWeight(4);
-      point(this.pos.x, this.pos.y);
-      strokeWeight(2);
-      const dir = import_p5.Vector.mult(this.velocity, 10);
-      line(this.pos.x, this.pos.y, this.pos.x + dir.x, this.pos.y + dir.y);
-    }
-    getNeighbors(radius, boids2) {
-      return boids2.filter((boid) => boid != this && this.pos.dist(boid.pos) < radius);
-    }
-    vecTowardsCenter(vecs) {
-      if (vecs.length == 0) {
-        return createVector(0, 0);
-      } else {
-        return limitVec(vectorMean(vecs).sub(this.pos));
-      }
-    }
-    update(boids2) {
-      const center = this.vecTowardsCenter(this.getNeighbors(this.radius, boids2).map((n) => n.pos));
-      const avoid = this.vecTowardsCenter(this.getNeighbors(this.avoidRadius, boids2).map((n) => n.pos)).mult(-1);
-      const align = this.vecTowardsCenter(this.getNeighbors(this.alignRadius, boids2).map((n) => n.velocity));
-      const love = mouseIsPressed ? limitVec(createVector(mouseX, mouseY).sub(this.pos)) : createVector(0, 0);
-      const w_center = 3;
-      const w_avoid = 10;
-      const w_align = 1;
-      const w_love = 100;
-      const goal = center.mult(w_center).add(avoid.mult(w_avoid)).add(align.mult(w_align)).add(love.mult(w_love)).normalize();
-      const mu = 0.1;
-      this.velocity.mult(1 - mu).add(goal.mult(mu)).normalize();
-      this.pos.add(this.velocity);
-    }
-  };
-  var setup_sized = (width2, height2) => {
-    boids = Array.from({length: num_points}, () => new Boid(random(0, width2), random(0, height2)));
+  var showQuadtree = false;
+  var setup_sized = (width2, height2, showQuadtree_, numBoids) => {
+    boids = Array.from({length: numBoids}, () => new Boid(random(0, width2), random(0, height2)));
+    showQuadtree = showQuadtree_;
   };
   function mouseClicked() {
     console.log(mouseX, mouseY);
   }
   var setup = () => {
     createCanvas(windowWidth, windowHeight);
-    setup_sized(windowWidth, windowHeight);
+    setup_sized(windowWidth, windowHeight, true, 200);
   };
   var draw = () => {
     background("rgba(0, 0, 0, 1)");
+    boids.forEach((boid) => boid.update(boids));
     boids.forEach((b) => {
       if (b.pos.x < 0) {
         b.pos.x = width;
@@ -17211,9 +17213,10 @@
         b.pos.y = 0;
       }
     });
-    boids.forEach((boid) => boid.update(boids));
-    const quad = new Quadtree(0, 0, width, height, boids);
-    quad.draw();
+    if (showQuadtree) {
+      const quad = new Quadtree(0, 0, width, height, boids);
+      quad.draw();
+    }
     boids.forEach((p) => p.draw());
   };
   Object.assign(window, {setup, draw, mouseClicked});
