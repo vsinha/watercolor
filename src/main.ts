@@ -16,7 +16,7 @@ export const setup = (): void => {
   const height = windowHeight;
   const renderer = createCanvas(width, height);
   renderer.parent("art_div");
-  qopyl.setup_sized(width, height);
+  qopyl.setup_sized(width, height, false, 50);
 };
 
 export const draw = (): void => {
