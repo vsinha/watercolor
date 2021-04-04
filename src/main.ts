@@ -13,7 +13,7 @@ import * as qopyl from "./artwork/qopyl/main.js";
 
 export const setup = (): void => {
   const width = windowWidth;
-  const height = 500;
+  const height = windowHeight;
   const renderer = createCanvas(width, height);
   renderer.parent("art_div");
   qopyl.setup_sized(width, height);
