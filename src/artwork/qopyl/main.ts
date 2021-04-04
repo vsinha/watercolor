@@ -4,7 +4,7 @@ import { Quadtree } from "./quadtree.js";
 let boids: Boid[] = [];
 let showQuadtree = false;
 
-export const setup_sized = (
+export const setup_ = (
   width: number,
   height: number,
   showQuadtree_: boolean,
@@ -24,13 +24,13 @@ export function mouseClicked(): void {
 
 export const setup = (): void => {
   createCanvas(windowWidth, windowHeight);
-  setup_sized(windowWidth, windowHeight, true, 200);
+  setup_(windowWidth, windowHeight, true, 200);
 };
 
-export const draw = (): void => {
+export const draw_ = (dt: number): void => {
   background("rgba(0, 0, 0, 1)");
 
-  boids.forEach((boid) => boid.update(boids));
+  boids.forEach((boid) => boid.update(dt, boids));
 
   // torus
   boids.forEach((b) => {
@@ -52,6 +52,10 @@ export const draw = (): void => {
   }
 
   boids.forEach((p) => p.draw());
+};
+
+export const draw = (): void => {
+  draw_(deltaTime);
 };
 
 // Expose the setup/draw functions to the global scope, because

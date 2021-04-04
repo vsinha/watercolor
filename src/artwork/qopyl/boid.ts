@@ -1,7 +1,7 @@
 import { Vector } from "p5";
 import { IPosition } from "./quadtree.js";
 
-const speed = 1;
+const speed = 0.1;
 
 function vectorMean(vecs: Vector[]): Vector {
   if (vecs.length == 0) {
@@ -35,7 +35,7 @@ export class Boid implements IPosition {
     this.speed = 1;
     this.velocity = createVector(random(-1, 1), random(-1, 1))
       .normalize()
-      .mult(speed);
+      .mult(100);
   }
 
   draw(): void {
@@ -45,8 +45,8 @@ export class Boid implements IPosition {
 
     strokeWeight(2);
 
-    const dir = Vector.mult(this.velocity, 10);
-    line(this.pos.x, this.pos.y, this.pos.x + dir.x, this.pos.y + dir.y);
+    // const dir = Vector.mult(this.velocity, 10);
+    // line(this.pos.x, this.pos.y, this.pos.x + dir.x, this.pos.y + dir.y);
   }
 
   private getNeighbors(radius: number, boids: Boid[]) {
@@ -64,13 +64,11 @@ export class Boid implements IPosition {
     }
   }
 
-  update(boids: Boid[]): void {
-    // cohesion
+  update(dt: number, boids: Boid[]): void {
     const center = this.vecTowardsCenter(
       this.getNeighbors(this.radius, boids).map((n) => n.pos)
     );
 
-    // separation
     const avoid = this.vecTowardsCenter(
       this.getNeighbors(this.avoidRadius, boids).map((n) => n.pos)
     ).mult(-1);
@@ -98,7 +96,9 @@ export class Boid implements IPosition {
     this.velocity
       .mult(1 - mu)
       .add(goal.mult(mu))
-      .normalize();
+      .normalize()
+      .mult(speed)
+      .mult(dt);
 
     this.pos.add(this.velocity);
   }

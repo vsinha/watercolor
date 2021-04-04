@@ -1,3 +1,4 @@
+import "p5";
 import * as qopyl from "./artwork/qopyl/main.js";
 // function sketch_idnameofdiv(p) {
 //   p.setup = function () {
@@ -16,11 +17,11 @@ export const setup = (): void => {
   const height = windowHeight;
   const renderer = createCanvas(width, height);
   renderer.parent("art_div");
-  qopyl.setup_sized(width, height, false, 50);
+  qopyl.setup_(width, height, false, 50);
 };
 
 export const draw = (): void => {
-  qopyl.draw();
+  qopyl.draw_(deltaTime);
 };
 
 // Expose the setup/draw functions to the global scope, because
