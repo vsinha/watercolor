@@ -17221,7 +17221,7 @@
   // src/main.ts
   var setup2 = () => {
     const width2 = windowWidth;
-    const height2 = 500;
+    const height2 = windowHeight;
     const renderer = createCanvas(width2, height2);
     renderer.parent("art_div");
     setup_sized(width2, height2);
