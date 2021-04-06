@@ -1,16 +1,5 @@
 import "p5";
 import * as qopyl from "./artwork/qopyl/main.js";
-// function sketch_idnameofdiv(p) {
-//   p.setup = function () {
-//     p.createCanvas(400, 400);
-//   };
-
-//   p.draw = function () {
-//     // stuff to draw
-//     p.background("orange");
-//   };
-// }
-// new p5(sketch_idnameofdiv, "art");
 
 export const setup = (): void => {
   const width = windowWidth;

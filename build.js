@@ -3,6 +3,8 @@ let path = require("path");
 let fs = require("fs");
 const { info } = require("console");
 
+let mode = process.argv[2] ? process.argv[2] : "dev";
+
 function findFilesInDir(startPath, filter) {
   var results = [];
 
@@ -24,16 +26,42 @@ function findFilesInDir(startPath, filter) {
   return results;
 }
 
+function copyStaticFiles(from, to) {
+  let html = findFilesInDir(from, ".html");
+  let css = findFilesInDir(from, ".css");
+  let files = html.concat(css);
+  for (let file of files) {
+    // let source = files[i];
+    let destination = file.replace(from, to);
+    fs.copyFile(file, destination, (err) => {
+      if (err) throw err;
+      console.log(file + " was copied to " + destination);
+    });
+  }
+}
+
 let entryPoints = findFilesInDir("./", "main.ts");
 
 console.log("Found entrypoints: ", entryPoints);
 
-esbuild.build({
+let to = "./build";
+const settings = {
   entryPoints,
   bundle: true,
-  outdir: "./dist/",
+  outdir: to,
   watch: true,
   sourcemap: true,
   minify: false,
   logLevel: "info",
-});
+
+  // loader: { ".html": "file", ".css": "file" },
+};
+
+if (mode == "prod") {
+  to = "./dist";
+  settings.minify = true;
+  settings.watch = false;
+  settings.sourcemap = false;
+  settings.outdir = to;
+}
+esbuild.build(settings).then(() => copyStaticFiles("src", to));
